@@ -1,4 +1,24 @@
 <script setup>
+const apiKey = "fd6c1a65844461c1ec6bcbfff98ee418"
+
+// https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid=fd6c1a65844461c1ec6bcbfff98ee418
+
+const query = `https://api.openweathermap.org/data/2.5/weather?lat=43.128056&lon=77.080833&appid=${apiKey}&units=metric`;
+
+fetch(query).then((response) => {
+  return response.json()
+}).then((data) => {
+    console.log(data);
+    document.querySelector('.city').textContent = data.name;
+    document.querySelector('.temp').innerHTML = Math.round(data.main.temp) + '&deg;';
+    // https://openweathermap.org/img/wn/13d@2x.png
+    document.querySelector('.icon').innerHTML = `<img  src = "https://openweathermap.org/img/wn/${data.weather[0]['icon']}@2x.png">`; 
+    document.querySelector('.img_now').innerHTML = `<img  src = "https://shymbulak.com/_nuxt/img/day34.67177d5.png">`;
+    document.querySelector('.wind').textContent = data.wind.speed +  "м/c";
+    document.querySelector('.humidity').textContent = data.main.humidity +  "см";  
+
+
+})
 
 </script>
 
@@ -31,19 +51,19 @@
     </div>
 
     <div class="main">
-      <h1 class="text-[#212225] text-3xl font-semibold mb-12">Погода</h1>
+      <h1 class="text-[#212225] text-3xl font-semibold mb-12 city">Погода-</h1>
 
       <div class="weather">
         <div class="today">
           
-          <div class="now">
+          <div class="now mr-4">
             <h3>Сейчас</h3>
             <div class="now_weather">
               <div class="img_now">
                 <img src="" alt="Weather_img"> 
               </div>
               <div class="info_now">
-                <div class="temp">2°C</div>
+                <div class="temp"></div>
                 <hr/>
                 <div class="now_media">Сейчас</div>
                 <div class="condition">
@@ -180,6 +200,9 @@
     display: flex
     justify-content: center
     align-items: center
+
+  .condition
+    display: flex
 
   .condition img
     margin-right: 8px
