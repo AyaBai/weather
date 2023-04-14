@@ -1,5 +1,5 @@
-<script setup>
-const apiKey = "fd6c1a65844461c1ec6bcbfff98ee418"
+<script>
+  const apiKey = "fd6c1a65844461c1ec6bcbfff98ee418"
 
 // https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid=fd6c1a65844461c1ec6bcbfff98ee418
 
@@ -17,8 +17,8 @@ fetch(query)
     // https://openweathermap.org/img/wn/13d@2x.png
     document.querySelector('.icon').innerHTML = `<img  src = "https://openweathermap.org/img/wn/${data.weather[0]['icon']}@2x.png">`; 
     document.querySelector('.img_now').innerHTML = `<img  src = "https://openweathermap.org/img/wn/${data.weather[0]['icon']}@2x.png">`;
-    document.querySelector('.wind').textContent = data.wind.speed +  "м/c";
-    document.querySelector('.humidity').textContent = data.main.humidity +  "см";  
+    document.querySelector('.wind_cell').textContent = data.wind.speed +  "м/c";
+    document.querySelector('.humidity_cell').textContent = data.main.humidity +  "см";  
 
 
 })
@@ -28,6 +28,42 @@ fetch(hourly).then((response) => {
 }).then((data) => {
     console.log(data);
 })
+
+export default{
+  data() {
+    return {
+      days: [
+        { 
+          time: '00',
+          icon: '',
+          temp: '26°'
+        },
+        { 
+          time: '01',
+          icon: '',
+          temp: '27°'
+        },
+        { 
+          time: '02',
+          icon: '',
+          temp: '25°'
+        },
+        { 
+          time: '03',
+          icon: '',
+          temp: '23°'
+        },
+        { 
+          time: '04',
+          icon: '',
+          temp: '26°'
+        }
+        
+      ]
+    }
+  }
+}
+
 
 </script>
 
@@ -77,10 +113,12 @@ fetch(hourly).then((response) => {
                 <div class="now_media">Сейчас</div>
                 <div class="condition">
                   <div class="wind">
-                    <img src="images/wind.8842246.svg" alt="wind"> 3.89 м/c  
+                    <img src="images/wind.8842246.svg" alt="wind">
+                    <div class="wind_cell"></div> 
                   </div>
                   <div class="humidity">
-                    <img src="images/precipitation.ada3750.svg" alt="humidity"> 0.0 см 
+                    <img src="images/precipitation.ada3750.svg" alt="humidity">
+                    <div class="humidity_cell"></div> 
                   </div>
                   
                 </div>
@@ -89,16 +127,23 @@ fetch(hourly).then((response) => {
           </div>
 
           <div class="day mb-6">
-            <h3 class="text-lg font-semibold">Погода в течение дня</h3>
+            <div class="flex center">
+              <div class="w-3,5 h-3,5">
+                <img src="images/clock.svg" alt="clock">   
+              </div>
+              <h3 class="text-lg font-semibold pl-2">Погода в течение дня</h3>
+            </div>
             <hr class="my-5"/>
             <div class="day_forecast">
               <div class="day_wrapper">
-                <div class="wrapper_cell">
-                  <div class="time">00</div>
+                <div class="wrapper_cell" v-for="day in days" :key="day.id">
+                  <div class="time">{{ day.time }}</div>
                   <div class="icon">
-                    <img src="" alt="cloud">
+                    {{ day.icon }}
+                    <img src="" alt="">
                   </div>
-                  <div class="temperature">26°</div>
+                  <div class="temperature">{{ day.temp }}</div>
+
                 </div>
               </div>
             </div>  
@@ -112,8 +157,15 @@ fetch(hourly).then((response) => {
                 <h3 class="ml-2">Погода на 7 дней</h3>
               </div>
               
-              <div class="forecast">
-                hello
+              <div class="forecast flex">
+                <div class="forecast_cell">
+                  <div class="date flex">
+                    <div class="date_week">Сегодня</div>
+                    <div class="date_calender hidden  ">14 апреля</div>
+                  </div>
+                  <div class="icon_small"></div>
+                  <div class="min_max_temp"></div>
+                </div>
             
               </div>
             </div>
