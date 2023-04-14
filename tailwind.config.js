@@ -4,7 +4,15 @@ export default {
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
     ],
+  corePlugins: {
+    float: false,
+    objectFit: false,
+    objectPosition: false,
+  },  
   theme: {
+    container: {
+      center: true,
+    },
     extend: {},
   },
   plugins: [],
