@@ -1,68 +1,68 @@
 <script>
-  const apiKey = "fd6c1a65844461c1ec6bcbfff98ee418"
+  import axios from 'axios';
 
-// https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid=fd6c1a65844461c1ec6bcbfff98ee418
+  
+  export default{
+    data() {
+      return {
+        apiKey: 'fd6c1a65844461c1ec6bcbfff98ee418',
+        weather: null,
+        wind: '',
+        humidity: '',
+        condition:'',
+        days: [
+          { 
+            time: '00',
+            icon: '',
+            temp: '26°'
+          },
+          { 
+            time: '01',
+            icon: '',
+            temp: '27°'
+          },
+          { 
+            time: '02',
+            icon: '',
+            temp: '25°'
+          },
+          { 
+            time: '03',
+            icon: '',
+            temp: '23°'
+          },
+          { 
+            time: '04',
+            icon: '',
+            temp: '26°'
+          },
+          { 
+            time: '07',
+            icon: '',
+            temp: '26°'
+          }
+          
+        ]
+      };
+    },
+    mounted() {
+      axios
 
-const query = `https://api.openweathermap.org/data/2.5/weather?lat=43.128056&lon=77.080833&appid=${apiKey}&units=metric&lang=ru`;
-const hourly = `https://api.openweathermap.org/data/2.5/forecast?lat=43.128056&lon=77.080833&appid=${apiKey}&units=metric&lang=ru`;
-
-fetch(query)
-  .then((response) => {
-  return response.json()
-  })
-  .then((data) => {
-    console.log(data);
-    // document.querySelector('.city').textContent = data.name;
-    document.querySelector('.temp').innerHTML = Math.round(data.main.temp) + '&deg;';
-    // https://openweathermap.org/img/wn/13d@2x.png
-    document.querySelector('.icon').innerHTML = `<img  src = "https://openweathermap.org/img/wn/${data.weather[0]['icon']}@2x.png">`; 
-    document.querySelector('.img_now').innerHTML = `<img  src = "https://openweathermap.org/img/wn/${data.weather[0]['icon']}@2x.png">`;
-    document.querySelector('.wind_cell').textContent = data.wind.speed +  "м/c";
-    document.querySelector('.humidity_cell').textContent = data.main.humidity +  "см";  
-
-
-})
-
-fetch(hourly).then((response) => {
-  return response.json()
-}).then((data) => {
-    console.log(data);
-})
-
-export default{
-  data() {
-    return {
-      days: [
-        { 
-          time: '00',
-          icon: '',
-          temp: '26°'
-        },
-        { 
-          time: '01',
-          icon: '',
-          temp: '27°'
-        },
-        { 
-          time: '02',
-          icon: '',
-          temp: '25°'
-        },
-        { 
-          time: '03',
-          icon: '',
-          temp: '23°'
-        },
-        { 
-          time: '04',
-          icon: '',
-          temp: '26°'
-        }
-        
-      ]
-    }
-  }
-}
+      .get(`https://api.openweathermap.org/data/2.5/weather?lat=43.128056&lon=77.080833&appid=${this.apiKey}&units=metric&lang=ru`)
+        .then(response => {
+          this.weather = response.data;
+            console.log(this.weather);
+          this.weather = Math.round(response.data.main.temp);
+          this.wind = response.data.wind.deg;
+          this.humidity = response.data.main.humidity;
+          this.condition = response.data.weather[0].description; 
+          
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    },
+  };
 
 
 </script>
@@ -71,10 +71,10 @@ export default{
   <div class="px-4 md:container md:mx-auto">
     <div class="header">
       <div>
-        <button class="btn px-3 py-3.5 mr-3 md:mr-5">
+        <button class="btn px-2.5 py-3 md:px-3 md:py-3.5 mr-3 md:mr-5">
           <img src="images/menu.svg" alt="menu">
         </button>
-        <button class="btn px-3 py-3.5">
+        <button class="btn px-2.5 py-2.5 md:px-3 md:py-3.5">
           <img src="images/loupe.svg" alt="loupe">
         </button>  
       </div>
@@ -83,13 +83,13 @@ export default{
       </div>
       
       <div class="header_right">
-        <button class="btn px-3 py-3.5 mr-3 md:mr-5">
+        <button class="btn px-2.5 py-2.5 md:px-3 md:py-3.5 mr-3 md:mr-5">
           <img src="images/User.svg" alt="user">
         </button>
         <button class="btn heart px-3 py-3.5 md:mr-5">
           <img src="images/Heart.svg" alt="heart">
         </button>
-        <button class="btn px-3 py-3.5 md:my-4">
+        <button class="btn px-3 py-2.5 md:px-4 md:py-3.5 md:my-4">
           <img src="images/bag.svg" alt="bag">
         </button>
       </div>
@@ -108,18 +108,19 @@ export default{
                 <img src="" alt="Weather_img"> 
               </div>
               <div class="info_now">
-                <div class="temp"></div>
+                <div class="temp">{{weather}}&deg;C</div>
                 <hr/>
                 <div class="now_media">Сейчас</div>
                 <div class="condition">
                   <div class="wind">
                     <img src="images/wind.8842246.svg" alt="wind">
-                    <div class="wind_cell"></div> 
+                    <div class="wind_cell">{{wind}} м/c</div> 
                   </div>
-                  <div class="humidity">
+                  <div class="humidity hidden">
                     <img src="images/precipitation.ada3750.svg" alt="humidity">
-                    <div class="humidity_cell"></div> 
+                    <div class="humidity_cell">{{humidity}} см</div> 
                   </div>
+                  <div class="description">{{condition}}</div>
                   
                 </div>
               </div> 
@@ -127,7 +128,7 @@ export default{
           </div>
 
           <div class="day mb-6">
-            <div class="flex center">
+            <div class="flex items-center">
               <div class="w-3,5 h-3,5">
                 <img src="images/clock.svg" alt="clock">   
               </div>
@@ -138,7 +139,7 @@ export default{
               <div class="day_wrapper">
                 <div class="wrapper_cell" v-for="day in days" :key="day.id">
                   <div class="time">{{ day.time }}</div>
-                  <div class="icon">
+                  <div class="icon w-7 h-7">
                     {{ day.icon }}
                     <img src="" alt="">
                   </div>
@@ -152,22 +153,165 @@ export default{
         </div>
         <div class="weather_days mb-12">
             <div class="days">
-              <div class="title px-4 py4">
+              <div class="title px-4 py-4">
                 <img src="images/calendar.cae4879.svg" alt="calendar">
                 <h3 class="ml-2">Погода на 7 дней</h3>
               </div>
               
-              <div class="forecast flex">
+              <div class="forecast flex flex-col">
                 <div class="forecast_cell">
-                  <div class="date flex">
-                    <div class="date_week">Сегодня</div>
+                  <div class="date_forecast">
+                    <div class="date_week pr-4">Сегодня</div>
                     <div class="date_calender hidden  ">14 апреля</div>
                   </div>
-                  <div class="icon_small"></div>
-                  <div class="min_max_temp"></div>
+                  <div class="icon_small pr-4">
+                    <img src="images/weather/sun.svg" alt="">
+                    <div class="percent">80%</div>
+                  </div>
+                  <div class="min_max_temp pr-4 flex">
+                    <div>мин.</div>
+                    <div>16°</div>
+                  </div>
+                  <div class="min_max_temp pr-4 flex">
+                    <div>макс.</div>
+                    <div>28°</div>
+                  </div>
+                </div>
+
+                <div class="forecast_cell">
+                  <div class="date_forecast">
+                    <div class="date_week pr-4">Пн</div>
+                    <div class="date_calender hidden  ">14 апреля</div>
+                  </div>
+                  <div class="icon_small pr-4">
+                    <img src="images/weather/sun.svg" alt="">
+                    <div class="percent">80%</div>
+                  </div>
+                  <div class="min_max_temp pr-4 flex">
+                    <div>мин.</div>
+                    <div>16°</div>
+                  </div>
+                  <div class="min_max_temp pr-4 flex">
+                    <div>макс.</div>
+                    <div>28°</div>
+                  </div>
+                </div>
+
+                <div class="forecast_cell">
+                  <div class="date_forecast">
+                    <div class="date_week pr-4">Вт</div>
+                    <div class="date_calender hidden  ">14 апреля</div>
+                  </div>
+                  <div class="icon_small pr-4">
+                    <img src="images/weather/sun.svg" alt="">
+                    <div class="percent">80%</div>
+                  </div>
+                  <div class="min_max_temp pr-4 flex">
+                    <div>мин.</div>
+                    <div>16°</div>
+                  </div>
+                  <div class="min_max_temp pr-4 flex">
+                    <div>макс.</div>
+                    <div>28°</div>
+                  </div>
+                </div>
+
+                <div class="forecast_cell">
+                  <div class="date_forecast">
+                    <div class="date_week pr-4">Ср</div>
+                    <div class="date_calender hidden  ">14 апреля</div>
+                  </div>
+                  <div class="icon_small pr-4">
+                    <img src="images/weather/sun.svg" alt="">
+                    <div class="percent">80%</div>
+                  </div>
+                  <div class="min_max_temp pr-4 flex">
+                    <div>мин.</div>
+                    <div>16°</div>
+                  </div>
+                  <div class="min_max_temp pr-4 flex">
+                    <div>макс.</div>
+                    <div>28°</div>
+                  </div>
+                </div>
+
+                <div class="forecast_cell">
+                  <div class="date_forecast">
+                    <div class="date_week pr-4">Чт</div>
+                    <div class="date_calender hidden  ">14 апреля</div>
+                  </div>
+                  <div class="icon_small pr-4">
+                    <img src="images/weather/sun.svg" alt="">
+                    <div class="percent">80%</div>
+                  </div>
+                  <div class="min_max_temp pr-4 flex">
+                    <div>мин.</div>
+                    <div>16°</div>
+                  </div>
+                  <div class="min_max_temp pr-4 flex">
+                    <div>макс.</div>
+                    <div>28°</div>
+                  </div>
+                </div>
+
+                <div class="forecast_cell">
+                  <div class="date_forecast">
+                    <div class="date_week pr-4">Пт</div>
+                    <div class="date_calender hidden  ">14 апреля</div>
+                  </div>
+                  <div class="icon_small pr-4">
+                    <img src="images/weather/sun.svg" alt="">
+                    <div class="percent">80%</div>
+                  </div>
+                  <div class="min_max_temp pr-4 flex">
+                    <div>мин.</div>
+                    <div>16°</div>
+                  </div>
+                  <div class="min_max_temp pr-4 flex">
+                    <div>макс.</div>
+                    <div>28°</div>
+                  </div>
                 </div>
             
               </div>
+
+                <div class="forecast_cell">
+                  <div class="date_forecast">
+                    <div class="date_week pr-4">Сб</div>
+                    <div class="date_calender hidden  ">14 апреля</div>
+                  </div>
+                  <div class="icon_small pr-4">
+                    <img src="images/weather/sun.svg" alt="">
+                    <div class="percent">80%</div>
+                  </div>
+                  <div class="min_max_temp pr-4 flex">
+                    <div>мин.</div>
+                    <div>16°</div>
+                  </div>
+                  <div class="min_max_temp pr-4 flex">
+                    <div>макс.</div>
+                    <div>28°</div>
+                  </div>
+                </div>
+
+                <div class="forecast_cell">
+                  <div class="date_forecast">
+                    <div class="date_week pr-4">Вс</div>
+                    <div class="date_calender hidden  ">14 апреля</div>
+                  </div>
+                  <div class="icon_small pr-4">
+                    <img src="images/weather/sun.svg" alt="">
+                    <div class="percent">80%</div>
+                  </div>
+                  <div class="min_max_temp pr-4 flex">
+                    <div>мин.</div>
+                    <div>16°</div>
+                  </div>
+                  <div class="min_max_temp pr-4 flex">
+                    <div>макс.</div>
+                    <div>28°</div>
+                  </div>
+                </div>
             </div>
             
           </div>
@@ -258,9 +402,6 @@ export default{
 
   // WEATHER NOW
 
-  .icon 
-    height: 26px
-    width: 26px
 
   .now
     padding: 18px 32px 20px 24px
@@ -281,6 +422,7 @@ export default{
   .info_now hr 
     width: 100%
     border: 1px solid #e1e7ee
+    margin-bottom: 8px
 
   .temp
     font-weight: 700
@@ -292,15 +434,22 @@ export default{
     display: none
     font-size: 14px
     line-height: 17px
+
+  .description
+    font-weight: 600
+    font-size: 21px
    
   .wind
-    display: flex
+    display: none
+
+    // display: flex
     margin-right: 40px
     justify-content: center
     align-items: center
 
   .humidity
-    display: flex
+    display: none
+    // display: flex
     justify-content: center
     align-items: center
 
@@ -334,6 +483,7 @@ export default{
   .day_forecast
     align-items: center
     display: flex
+    justify-content: center
     gap: 30px
     overflow-y: hidden
     width: 100%
@@ -343,8 +493,7 @@ export default{
     overflow-x: auto
     padding-bottom: 10px
     scrollbar-width: none
-    transition: .2s
-    width: 80%
+    // width: 80%
 
   .wrapper_cell
     
@@ -382,8 +531,40 @@ body
     h3
       margin-bottom: 20px
 
-.row
-  // display: flex
+.forecast_cell
+  color: #4F5864
+  font-weight: 500
+  font-size: 16px
+  border-top: 1px solid #e1e7ee
+  align-items: center
+  display: flex
+  justify-content: flex-end
+  gap:20px
+  padding: 8px
+  img
+    width: 22px
+    height: 22px
+  .percent
+    color: #75B6F2
+    font-weight: 600
+    font-size: 12px
+    align-items: center
+    margin-bottom: 8px
+
+.date_forecast
+  display: flex
+  margin-right: auto
+
+.time
+  font-weight: 500
+  font-size: 14px
+  color: #6D7784
+
+
+.temperature
+  font-weight: 500
+  font-size: 18px
+  color: #4F5864
 
 .resort_row
   color: #A0A7AF
