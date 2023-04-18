@@ -10,57 +10,34 @@
         wind: '',
         humidity: '',
         condition:'',
-        days: [
-          { 
-            time: '00',
-            icon: '',
-            temp: '26°'
-          },
-          { 
-            time: '01',
-            icon: '',
-            temp: '27°'
-          },
-          { 
-            time: '02',
-            icon: '',
-            temp: '25°'
-          },
-          { 
-            time: '03',
-            icon: '',
-            temp: '23°'
-          },
-          { 
-            time: '04',
-            icon: '',
-            temp: '26°'
-          },
-          { 
-            time: '07',
-            icon: '',
-            temp: '26°'
-          }
-          
-        ]
+        days: Array,
+        icon: null,
       };
     },
     mounted() {
-      axios
-
-      .get(`https://api.openweathermap.org/data/2.5/weather?lat=43.128056&lon=77.080833&appid=${this.apiKey}&units=metric&lang=ru`)
+      axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=43.128056&lon=77.080833&appid=${this.apiKey}&units=metric&lang=ru`)
         .then(response => {
-          this.weather = response.data;
-            console.log(this.weather);
-          this.weather = Math.round(response.data.main.temp);
-          this.wind = response.data.wind.deg;
-          this.humidity = response.data.main.humidity;
-          this.condition = response.data.weather[0].description; 
+          const data = response.data;
+            console.log(data);
+          this.weather = Math.round(data.main.temp);
+          this.wind = data.wind.speed;
+          this.humidity = data.main.humidity;
+          this.condition = data.weather[0].description;
+          this.icon = data.weather.url(`<img  src = "https://openweathermap.org/img/wn/${data.weather[0]['icon']}@2x.png">`) 
           
       })
       .catch(error => {
         console.log(error);
       });
+
+      axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=43.128056&lon=77.080833&appid=${this.apiKey}&units=metric&lang=ru`)
+        .then(response => {
+          const forecast = response.data;
+            console.log(forecast);
+            this.days = forecast.list;
+            // this.icon = "https://openweathermap.org/img/wn/${forecast.weather Array[40]['icon']}@2x.png";
+            console.log(this.days)
+        });
     },
   };
 
@@ -96,13 +73,13 @@
     </div>
 
     <div class="main">
-      <h1 class="text-[#212225] text-3xl font-semibold mb-12 city">Погода</h1>
+      <h1 class="text-[#212225] text-3xl font-semibold mb-6 md:mb-12">Погода</h1>
 
       <div class="weather">
         <div class="today">
           
           <div class="now mb-4">
-            <h3 class="text-lg">Сейчас</h3>
+            <h3 class="text-lg hidden">Сейчас</h3>
             <div class="now_weather">
               <div class="img_now">
                 <img src="" alt="Weather_img"> 
@@ -110,18 +87,20 @@
               <div class="info_now">
                 <div class="temp">{{weather}}&deg;C</div>
                 <hr/>
-                <div class="now_media">Сейчас</div>
+                <!-- <div class="now_media">Сейчас</div> -->
                 <div class="condition">
-                  <div class="wind">
+                  <div class="wind hidden sm:block">
                     <img src="images/wind.8842246.svg" alt="wind">
                     <div class="wind_cell">{{wind}} м/c</div> 
                   </div>
-                  <div class="humidity hidden">
+                  <div class="humidity hidden sm:block">
                     <img src="images/precipitation.ada3750.svg" alt="humidity">
                     <div class="humidity_cell">{{humidity}} см</div> 
                   </div>
-                  <div class="description">{{condition}}</div>
-                  
+                  <div class="mobile_only flex flex-col md:hidden">
+                    <div class="description font-semibold text-xl md:hidden">{{condition}}</div>
+                    <h3 class="text-sm font-light md:hidden">Сейчас</h3>
+                  </div>
                 </div>
               </div> 
             </div>  
@@ -138,12 +117,12 @@
             <div class="day_forecast">
               <div class="day_wrapper">
                 <div class="wrapper_cell" v-for="day in days" :key="day.id">
-                  <div class="time">{{ day.time }}</div>
+                  <div class="time">{{ day.dt_txt}}</div>
                   <div class="icon w-7 h-7">
                     {{ day.icon }}
                     <img src="" alt="">
                   </div>
-                  <div class="temperature">{{ day.temp }}</div>
+                  <div class="temperature">{{ Math.round(day.main.temp) }}</div>
 
                 </div>
               </div>
@@ -297,7 +276,7 @@
                 <div class="forecast_cell">
                   <div class="date_forecast">
                     <div class="date_week pr-4">Вс</div>
-                    <div class="date_calender hidden  ">14 апреля</div>
+                    <div class="date_calender hidden">14 апреля</div>
                   </div>
                   <div class="icon_small pr-4">
                     <img src="images/weather/sun.svg" alt="">
@@ -347,6 +326,34 @@
               <li><a href="#">Паркинг</a></li>
             </ul>
           </div>
+          <div class="ski">
+            <h3>Инфо</h3>
+            <ul class="resort_row">
+              <li><a href="#">Правила</a></li>
+              <li><a href="#">Как добраться</a></li>
+              <li><a href="#">Новости</a></li>
+              <li><a href="#">Тех. поддержка</a></li>
+            </ul>
+          </div>
+          <div class="ski">
+            <h3>Контакты</h3>
+            <div class="social-icons">
+              <font-awesome-icon :icon="['fab', 'facebook']" />
+              <font-awesome-icon :icon="['fab', 'youtube']" />
+              <font-awesome-icon :icon="['fab', 'instagram']" />
+              <font-awesome-icon :icon="['fab', 'vk']" />
+              <font-awesome-icon :icon="['fab', 'whatsapp']" />
+              
+            </div>
+    
+            <ul class="text-[#A0A7AF] text-base font-normal">
+              <li class="mb-4">E-mail: olya101394@gmail.com</li>
+              <li class="mb-4">Тел: +7 727 331 77 77</li>      
+            </ul>
+          </div>
+          <p class="text-[#4F5864] text-sm">&copy; 2022 ТОО «Chimbulak Development»</p>
+
+
         </div>
       </div>
     </footer>
@@ -404,7 +411,7 @@
 
 
   .now
-    padding: 18px 32px 20px 24px
+    padding: 30px 24px
     // outline: 2px solid red
     background-color: #75B6F2
     color: #FFFFFF
@@ -436,19 +443,18 @@
     line-height: 17px
 
   .description
+    text-transform: capitalize
     font-weight: 600
     font-size: 21px
    
   .wind
-    display: none
-
     // display: flex
     margin-right: 40px
     justify-content: center
     align-items: center
 
   .humidity
-    display: none
+
     // display: flex
     justify-content: center
     align-items: center
@@ -524,6 +530,7 @@ body
   color: #ffffff
   .resort,
   .ski
+    border-bottom: 1px solid #2c2c2c
     font-weight: 500
     font-size: 18px
     // line-height: 120%
