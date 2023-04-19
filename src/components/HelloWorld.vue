@@ -11,11 +11,11 @@
         humidity: '',
         condition:'',
         days: Array,
-        icon: null,
+        icon: "//cdn.weatherapi.com/weather/64x64/night/113.png"
       };
     },
     mounted() {
-      axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=43.128056&lon=77.080833&appid=${this.apiKey}&units=metric&lang=ru`)
+      axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=43.1042&lon=77.0480&appid=${this.apiKey}&units=metric&lang=ru`)
         .then(response => {
           const data = response.data;
             console.log(data);
@@ -23,7 +23,7 @@
           this.wind = data.wind.speed;
           this.humidity = data.main.humidity;
           this.condition = data.weather[0].description;
-          this.icon = data.weather.url(`<img  src = "https://openweathermap.org/img/wn/${data.weather[0]['icon']}@2x.png">`) 
+          // this.icon = data.weather.url(`<img  src = "https://openweathermap.org/img/wn/${data.weather[0]['icon']}@2x.png">`) 
           
       })
       .catch(error => {
@@ -82,12 +82,12 @@
             <h3 class="text-lg hidden">Сейчас</h3>
             <div class="now_weather">
               <div class="img_now">
-                <img src="" alt="Weather_img"> 
+                <img src="" alt="Weather_img" :bind = "icon"> 
               </div>
               <div class="info_now">
                 <div class="temp">{{weather}}&deg;C</div>
-                <hr/>
-                <!-- <div class="now_media">Сейчас</div> -->
+                <hr/> 
+                
                 <div class="condition">
                   <div class="wind hidden sm:block">
                     <img src="images/wind.8842246.svg" alt="wind">
@@ -298,65 +298,7 @@
     </div>
    </div>
 
-    <footer class="footer">
-      <div class="">
-        <div class="footer_logo px-4 py-4 mb-8">
-          <a href="https://shymbulak.com/ru">
-            <img src="images/footer_logo.svg" alt="">
-          </a>
-        </div>
-        <div class="row">
-          <div class="resort">
-            <h3>Курорт</h3>
-            <ul class="resort_row">
-              <li><a href="#">Отели</a></li>
-              <li><a href="#">Магазин</a></li>
-              <li><a href="#">Рестораны</a></li>
-              <li><a href="#">Детям</a></li>
-              <li><a href="#">Развлечения</a></li>     
-            </ul>
-            
-          </div>
-          <div class="ski">
-            <h3>Катания</h3>
-            <ul class="resort_row">
-              <li><a href="#">Билеты</a></li>
-              <li><a href="#">Школа</a></li>
-              <li><a href="#">Прокат</a></li>
-              <li><a href="#">Паркинг</a></li>
-            </ul>
-          </div>
-          <div class="ski">
-            <h3>Инфо</h3>
-            <ul class="resort_row">
-              <li><a href="#">Правила</a></li>
-              <li><a href="#">Как добраться</a></li>
-              <li><a href="#">Новости</a></li>
-              <li><a href="#">Тех. поддержка</a></li>
-            </ul>
-          </div>
-          <div class="ski">
-            <h3>Контакты</h3>
-            <div class="social-icons">
-              <font-awesome-icon :icon="['fab', 'facebook']" />
-              <font-awesome-icon :icon="['fab', 'youtube']" />
-              <font-awesome-icon :icon="['fab', 'instagram']" />
-              <font-awesome-icon :icon="['fab', 'vk']" />
-              <font-awesome-icon :icon="['fab', 'whatsapp']" />
-              
-            </div>
     
-            <ul class="text-[#A0A7AF] text-base font-normal">
-              <li class="mb-4">E-mail: olya101394@gmail.com</li>
-              <li class="mb-4">Тел: +7 727 331 77 77</li>      
-            </ul>
-          </div>
-          <p class="text-[#4F5864] text-sm">&copy; 2022 ТОО «Chimbulak Development»</p>
-
-
-        </div>
-      </div>
-    </footer>
     
  
   
@@ -525,64 +467,6 @@ body
   margin: 0
   padding: 0
 
-.footer
-  background-color: #212225
-  color: #ffffff
-  .resort,
-  .ski
-    border-bottom: 1px solid #2c2c2c
-    font-weight: 500
-    font-size: 18px
-    // line-height: 120%
-    padding-left: 16px
-    h3
-      margin-bottom: 20px
-
-.forecast_cell
-  color: #4F5864
-  font-weight: 500
-  font-size: 16px
-  border-top: 1px solid #e1e7ee
-  align-items: center
-  display: flex
-  justify-content: flex-end
-  gap:20px
-  padding: 8px
-  img
-    width: 22px
-    height: 22px
-  .percent
-    color: #75B6F2
-    font-weight: 600
-    font-size: 12px
-    align-items: center
-    margin-bottom: 8px
-
-.date_forecast
-  display: flex
-  margin-right: auto
-
-.time
-  font-weight: 500
-  font-size: 14px
-  color: #6D7784
-
-
-.temperature
-  font-weight: 500
-  font-size: 18px
-  color: #4F5864
-
-.resort_row
-  color: #A0A7AF
-  font-weight: 400
-  font-size: 16px
-  display: grid
-  grid-template-columns: 1fr 1fr
-  li
-    margin-bottom: 16px
-    a
-      color: #A0A7AF
 
 
 
